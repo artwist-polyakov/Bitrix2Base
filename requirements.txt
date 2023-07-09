@@ -1,0 +1,6 @@
+pymysql
+sqlalchemy
+docker
+requests
+yaml
+re
