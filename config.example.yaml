@@ -31,5 +31,5 @@ contact_fields: null # Use example from deals. If value = null, export will be s
 company_fields: null # Use example from deals. If value = null, export will be skipped too.
 
 filter_date: # filter for all of exports.
- - lower: 2021-01-01 # If value = null, there are no limitations
- - upper: null
+ lower: 2021-01-01 # If value = null, there are no limitations
+ upper: null
