@@ -1,35 +1,39 @@
-from sqlalchemy import create_engine, inspect, text
-from tqdm import tqdm
+import clickhouse_connect
+
+def get_client(host, port, user, password, db_name, https = True):
+    return clickhouse_connect.get_client(interface = 'https' if https else 'http', host=host, port=port, username=user, password=password, database=db_name)
 
 def get_columns_and_types_clickhouse(table, host, port, user, password, db_name):
-    engine = create_engine(f"clickhouse+native://{user}:{password}@{host}:{port}/{db_name}") 
-    inspector = inspect(engine)
-    columns = inspector.get_columns(table)
+    url = f"https://{host}:{port}/?database={db_name}"
+    query = f"DESCRIBE TABLE {table}"
+    response = requests.post(url, data=query, auth=HTTPBasicAuth(user, password))
+    data = json.loads(response.text)
+
+    columns = [(item['name'], item['type']) for item in data]
     return columns
 
 def test_connection(host, port, user, password, db_name):
-    try:
-        engine = create_engine(f"clickhouse+native://{user}:{password}@{host}:{port}/{db_name}") 
-        result = engine.execute("SELECT 1")
+    client = get_client(host, port, user, password, db_name)
+    try: 
+        client.command('SELECT 1')
         print("Successfully connected to the database.")
-    except Exception as e:
+    except:
         print("Failed to connect to the database.")
-        print(str(e))
+
 
 def load_data_to_sql(data, table, fields_matching, host, port, user, password, db_name):
-    # Создаем движок SQLAlchemy
-    engine = create_engine(f"clickhouse+native://{user}:{password}@{host}:{port}/{db_name}") 
+    url = f"https://{host}:{port}/?database={db_name}"
     total = len(data)
     progress_bar = tqdm(total=total, position=0, leave=True)
     k = 0
-    # Начинаем транзакцию
-    with engine.begin() as connection:
-        for row in data:
-            row = {fields_matching.get(key, key): value for key, value in row.items()}
-            # Форматируем SQL запрос
-            sql = text(f"INSERT INTO {table} ({','.join(row.keys())}) VALUES ({','.join(':' + key for key in row.keys())})")
-            # Выполняем SQL запрос
-            connection.execute(sql, **row)
-            k+=1
-            if k % 100 == 0:
-                progress_bar.update(100)
+
+    for row in data:
+        row = {fields_matching.get(key, key): value for key, value in row.items()}
+        columns = ', '.join(row.keys())
+        values = ', '.join([str(x) for x in row.values()])
+        query = f"INSERT INTO {table} ({columns}) VALUES ({values})"
+        response = requests.post(url, data=query, auth=HTTPBasicAuth(user, password))
+
+        k += 1
+        if k % 100 == 0:
+            progress_bar.update(100)

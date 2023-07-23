@@ -8,6 +8,7 @@ def get_columns_and_types_sql(table, host, port, user, password, db_name):
     return columns
 
 def test_connection(host, port, user, password, db_name):
+    print(f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}")
     try:
         # Создаем движок SQLAlchemy
         engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}") 
