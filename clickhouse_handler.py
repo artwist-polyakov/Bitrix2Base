@@ -48,16 +48,18 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
 
     for row in data:
         row = {fields_matching.get(key, key): value for key, value in row.items()}
-        ID = row.get('ID')  # assuming 'id' is the key for the unique identifier
+        ID = row.get('ID')  # assuming 'ID' is the key for the unique identifier
 
         # Check if there's a record with this id in the table and the sum of 'sign' for each 'version' equals 1
-        response = client.command(f"SELECT version, SUM(sign) as sum_sign FROM {table} WHERE ID = {ID} GROUP BY version HAVING sum_sign = 1")
-        print(response)
-        versions = [row.split('\t')[0] for row in response.split('\n') if row]
+        response = client.command(f"SELECT version, ID, SUM(sign) as sum_sign FROM {table} WHERE ID = {ID} GROUP BY version, ID HAVING sum_sign = 1")
+        versions_and_rows = response.data
 
         # For each version, create a copy with sign=-1 and insert it into the table
-        for version in versions:
-            negative_row = row.copy()
+        for version_and_row in versions_and_rows:
+            version = version_and_row[0]
+            # Get the values from the database
+            db_row = dict(zip(response.column_names, version_and_row))
+            negative_row = db_row.copy()
             negative_row['version'] = version
             negative_row['sign'] = -1
             client.insert(table, [list(negative_row.values())], column_names=list(negative_row.keys()))
