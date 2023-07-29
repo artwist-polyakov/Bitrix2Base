@@ -1,11 +1,14 @@
 from sqlalchemy import create_engine, inspect, text
 from tqdm import tqdm
 
-def get_columns_and_types_postgresql(table, host, port, user, password, db_name):
+def get_columns_and_types(table, host, port, user, password, db_name):
     engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}") 
     inspector = inspect(engine)
     columns = inspector.get_columns(table)
     return columns
+
+def check_tabletype_errors(table, host, port, user, password, db_name):
+    return False, ""
 
 def test_connection(host, port, user, password, db_name):
     try:
