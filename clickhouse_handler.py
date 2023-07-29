@@ -41,16 +41,17 @@ def get_columns_and_types(table, host, port, user, password, db_name):
     # columns = [line.split('\t') for line in response.split('\n') if line]
     return result
 
-def load_data_to_sql(data, table, fields_matching, host, port, user, password, db_name):
+def load_data_to_sql(data, table, fields_matching, host, port, user, password, db_name, batch_size=100):
     client = get_client(host, port, user, password, db_name)
     total = len(data)
     progress_bar = tqdm(total=total, position=0, leave=True)
-    k = 0
 
     columns_and_types = get_columns_and_types(table, host, port, user, password, db_name)
     columns = [col['name'] for col in columns_and_types]
     columns_str = ', '.join(columns)
 
+    negative_rows = []
+    positive_rows = []
     for row in data:
         row = {fields_matching.get(key, key): value for key, value in row.items()}
         ID = row.get('ID')  # assuming 'ID' is the key for the unique identifier
@@ -61,26 +62,31 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
                 for db_row in block:
                     db_row_dict = dict(zip(stream.source.column_names, db_row))
                     version = db_row_dict.get('version')
-                    # For each version, create a copy with sign=-1 and insert it into the table
+                    # For each version, create a copy with sign=-1 and add it to negative_rows
                     negative_row = db_row_dict.copy()
                     negative_row['version'] = version
                     negative_row['sign'] = -1
-                    client.insert(table, [list(negative_row.values())], column_names=list(negative_row.keys()))
+                    del negative_row['sum_sign']  # delete 'sum_sign' before insertion
+                    negative_rows.append(list(negative_row.values()))
 
-        # Insert the new data with sign=1 and version as the current timestamp
-        # print( int(time.time()) )
+        # Add the new data with sign=1 and version as the current timestamp to positive_rows
         row['version'] = int(time.time())  # current timestamp
-        # row['version'] = datetime.now()
         row['sign'] = 1
-        # print("Значения для вставки в таблицу:")
-        # print([list(row.values())])
-        # print("Названия столбцов:")
-        # print(list(row.keys()))
-        client.insert(table, [list(row.values())], column_names=list(row.keys()))
+        positive_rows.append(list(row.values()))
 
-        k += 1
-        if k % 100 == 0:
-            progress_bar.update(100)
+        # If we've reached the batch size, insert the data and clear the lists
+        if len(negative_rows) >= batch_size:
+            client.insert(table, negative_rows, column_names=list(negative_row.keys()))
+            client.insert(table, positive_rows, column_names=list(row.keys()))
+            negative_rows = []
+            positive_rows = []
+            progress_bar.update(batch_size)
+
+    # Insert any remaining rows
+    if negative_rows or positive_rows:
+        client.insert(table, negative_rows, column_names=list(negative_row.keys()))
+        client.insert(table, positive_rows, column_names=list(row.keys()))
+        progress_bar.update(len(negative_rows) + len(positive_rows))
 
     progress_bar.close()
 
