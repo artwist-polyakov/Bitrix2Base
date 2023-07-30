@@ -11,11 +11,16 @@ def check_tabletype_errors(table, host, port, user, password, db_name):
     return False, ""
 
 def test_connection(host, port, user, password, db_name):
+    print(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}")
     try:
+        # Создаем движок SQLAlchemy
         engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}") 
+        # Выполняем простой SQL-запрос
         result = engine.execute("SELECT 1")
+        # Если запрос выполнен успешно, выводим сообщение об успешном подключении
         print("Successfully connected to the database.")
     except Exception as e:
+        # Если при выполнении запроса возникла ошибка, выводим сообщение об ошибке
         print("Failed to connect to the database.")
         print(str(e))
 
@@ -30,7 +35,11 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
         for row in data:
             row = {fields_matching.get(key, key): value for key, value in row.items()}
             # Форматируем SQL запрос
-            sql = text(f"INSERT INTO {table} ({','.join(row.keys())}) VALUES ({','.join(':' + key for key in row.keys())})")
+            sql = text(f"""
+            INSERT INTO {table} ({','.join(row.keys())}) VALUES ({','.join(':' + key for key in row.keys())})
+            ON CONFLICT (ID) DO UPDATE SET
+            {', '.join(f'{key} = excluded.{key}' for key in row.keys())}
+            """)
             # Выполняем SQL запрос
             connection.execute(sql, **row)
             k+=1
