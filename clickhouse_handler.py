@@ -76,7 +76,8 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
 
         # If we've reached the batch size, insert the data and clear the lists
         if len(negative_rows) >= batch_size:
-            client.insert(table, negative_rows, column_names=list(negative_row.keys()))
+            if negative_rows:  # only insert if negative_rows is not empty
+                client.insert(table, negative_rows, column_names=list(negative_row.keys()))
             client.insert(table, positive_rows, column_names=list(row.keys()))
             negative_rows = []
             positive_rows = []
@@ -84,11 +85,13 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
 
     # Insert any remaining rows
     if negative_rows or positive_rows:
-        client.insert(table, negative_rows, column_names=list(negative_row.keys()))
+        if negative_rows:  # only insert if negative_rows is not empty
+            client.insert(table, negative_rows, column_names=list(negative_row.keys()))
         client.insert(table, positive_rows, column_names=list(row.keys()))
         progress_bar.update(len(negative_rows) + len(positive_rows))
 
     progress_bar.close()
+
 
 def terrible_list_to_dict(data):
     result = []
@@ -99,6 +102,6 @@ def terrible_list_to_dict(data):
             if item.startswith('\n') or key is None:  # if it is a field name or the first non-empty string
                 key = item.strip()
             elif key:  # if it is a field type and we have a key
-                result.append({'name': key, 'type': item.strip(), 'nullable': False})
+                result.append({'name': key, 'type': item.strip(), 'nullable': 'Nullable' in item.strip()})
                 key = None  # reset the key
     return result
