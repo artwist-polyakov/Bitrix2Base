@@ -57,7 +57,7 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
         ID = row.get('ID')  # assuming 'ID' is the key for the unique identifier
 
         # Check if there's a record with this id in the table and the sum of 'sign' for each 'version' equals 1
-        with client.query_row_block_stream(f"SELECT {columns_str}, SUM(sign) as sum_sign FROM {table} WHERE ID = {ID} GROUP BY {columns_str} HAVING sum_sign = 1") as stream:
+        with client.query_row_block_stream(f"SELECT {columns_str}, SUM(sign) as sum_sign FROM {table} WHERE ID = {ID} GROUP BY {columns_str} HAVING sum_sign >= 1") as stream:
             for block in stream:
                 for db_row in block:
                     db_row_dict = dict(zip(stream.source.column_names, db_row))
@@ -78,7 +78,19 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
         if len(negative_rows) >= batch_size:
             if negative_rows:  # only insert if negative_rows is not empty
                 client.insert(table, negative_rows, column_names=list(negative_row.keys()))
-            client.insert(table, positive_rows, column_names=list(row.keys()))
+                # try:
+                #     client.insert(table, negative_rows, column_names=list(negative_row.keys()))
+                # except Exception as e:
+                #     print("Ошибка при вставке negative_rows. Содержимое:")
+                #     print(negative_rows)
+                #     raise e
+            client.insert(table, positive_rows, column_names=list(row.keys()))    
+            # try:
+            #     client.insert(table, positive_rows, column_names=list(row.keys()))
+            # except Exception as e:
+            #     print("Ошибка при вставке positive_rows. Содержимое:")
+            #     print(positive_rows)
+            #     raise e
             negative_rows = []
             positive_rows = []
             progress_bar.update(batch_size)
@@ -87,10 +99,26 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
     if negative_rows or positive_rows:
         if negative_rows:  # only insert if negative_rows is not empty
             client.insert(table, negative_rows, column_names=list(negative_row.keys()))
+            # try:
+            #     client.insert(table, negative_rows, column_names=list(negative_row.keys()))
+            # except Exception as e:
+            #     print("Ошибка при вставке negative_rows. Содержимое:")
+            #     print(negative_rows)
+            #     raise e
         client.insert(table, positive_rows, column_names=list(row.keys()))
+        # try:
+        #     client.insert(table, positive_rows, column_names=list(row.keys()))
+        # except Exception as e:
+        #     print("Ошибка при вставке positive_rows. Содержимое:")
+        #     print(positive_rows)
+        #     raise e            
         progress_bar.update(len(negative_rows) + len(positive_rows))
 
     progress_bar.close()
+    print("Prepearing to relax tree...")
+    time.sleep(20)
+    print("Relaxing tree...")
+    relax_versionned_merge_tree(table, host, port, user, password, db_name)
 
 
 def terrible_list_to_dict(data):
@@ -105,3 +133,27 @@ def terrible_list_to_dict(data):
                 result.append({'name': key, 'type': item.strip(), 'nullable': 'Nullable' in item.strip()})
                 key = None  # reset the key
     return result
+
+def relax_versionned_merge_tree(table, host, port, user, password, db_name):
+    client = get_client(host, port, user, password, db_name)
+
+    columns_and_types = get_columns_and_types(table, host, port, user, password, db_name)
+    columns = [col['name'] for col in columns_and_types]
+    columns_str = ', '.join(columns)
+    negative_rows = []  
+    # Find all records that have a sum of 'sign' less than 0 when grouped by version
+    with client.query_row_block_stream(f"SELECT {columns_str}, SUM(sign) as sum_sign FROM {table} GROUP BY  {columns_str} HAVING sum_sign < 0") as stream:
+        for block in stream:
+            for db_row in block:
+                db_row_dict = dict(zip(stream.source.column_names, db_row))
+                version = db_row_dict.get('version')
+                sign = db_row_dict.get('sign')
+                negative_row = db_row_dict.copy()
+                negative_row['version'] = version
+                negative_row['sign'] = -sign
+                del negative_row['sum_sign']  # delete 'sum_sign' before insertion
+                negative_rows.append(list(negative_row.values()))
+
+    if negative_rows:  # only insert if negative_rows is not empty
+        client.insert(table, negative_rows, column_names=list(negative_row.keys()))
+
