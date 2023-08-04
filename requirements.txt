@@ -2,3 +2,7 @@ clickhouse_connect==0.6.8
 docker_py==1.10.6
 SQLAlchemy==1.4.32
 tqdm==4.63.0
+requests
+pyyaml
+psycopg2-binary
+pymysql
