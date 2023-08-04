@@ -38,7 +38,7 @@ This README provides instructions for setting up and running the project.
 
 ## Cloud Function generation
 
-All files for Yandex Cloud Functions are automatically generated in the cf/ directory of the project.
+All files for Yandex Cloud Functions are automatically generated in the `/cf` directory of the project.
 
 **When deploying the function and connecting the outgoing webhook from Bitrix24, be sure to write the `application id` value to the environment variable `app_token`.**
 
