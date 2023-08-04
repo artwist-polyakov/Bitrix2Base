@@ -1,0 +1,31 @@
+deal:
+- autoincrement: false
+  comment: null
+  default: null
+  name: id
+  nullable: false
+  type: BIGINT
+- autoincrement: false
+  comment: null
+  default: null
+  name: title
+  nullable: false
+  type: VARCHAR(255)
+- autoincrement: false
+  comment: null
+  default: null
+  name: date_create
+  nullable: false
+  type: TIMESTAMP
+- autoincrement: false
+  comment: null
+  default: null
+  name: opportunity
+  nullable: false
+  type: NUMERIC(9, 2)
+- autoincrement: false
+  comment: null
+  default: null
+  name: ymclientid
+  nullable: true
+  type: NUMERIC
