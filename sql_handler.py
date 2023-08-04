@@ -1,4 +1,5 @@
 from sqlalchemy import create_engine, inspect, text
+import pymysql
 from tqdm import tqdm
 
 def get_columns_and_types(table, host, port, user, password, db_name):

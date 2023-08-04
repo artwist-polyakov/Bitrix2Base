@@ -1,22 +1,28 @@
 deal:
-- name: ID
+- autoincrement: false
+  comment: null
+  default: null
+  name: ID
   nullable: false
-  type: UInt64
-- name: TITLE
+  type: BIGINT
+- comment: null
+  default: null
+  name: TITLE
   nullable: false
-  type: String
-- name: DATE_CREATE
+  type: VARCHAR(255)
+- comment: null
+  default: null
+  name: DATE_CREATE
   nullable: false
-  type: DateTime(\'Europe/Moscow\')
-- name: OPPORTUNITY
+  type: DATETIME
+- comment: null
+  default: null
+  name: OPPORTUNITY
   nullable: false
-  type: Decimal(9, 2)
-- name: YMClientId
+  type: DECIMAL(9, 2)
+- autoincrement: false
+  comment: null
+  default: null
+  name: YMClientId
   nullable: true
-  type: Nullable(UInt64)
-- name: sign
-  nullable: false
-  type: Int8
-- name: version
-  nullable: false
-  type: UInt32
+  type: BIGINT
