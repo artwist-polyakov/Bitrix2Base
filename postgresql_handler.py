@@ -12,7 +12,6 @@ def check_tabletype_errors(table, host, port, user, password, db_name):
     return False, ""
 
 def test_connection(host, port, user, password, db_name):
-    print(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}")
     try:
         # Создаем движок SQLAlchemy
         engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}") 
