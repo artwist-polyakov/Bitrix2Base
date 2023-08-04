@@ -1,4 +1,6 @@
 import os
+import yaml
+import base64
 import json
 import urllib
 import ipaddress
@@ -27,7 +29,8 @@ def handler(event, context):
         request = event['body']
     post = dict(parse_qsl(request))
     URL = config['b24_key']
-    if post['auth[application_token]'] == URL:
+    app_token = os.environ['app_token']
+    if post['auth[application_token]'] == app_token:
         print(post)
         if 'DEAL' in post['event']:
             data_type = 'deal'
@@ -46,15 +49,18 @@ def handler(event, context):
                     },
             'body': 'Unknown Data Type!',
             }   
-
-    data = bx24.get_instance(post['data[FIELDS][ID]'], data_type, URL)
+    database_type = config['database_type']
+    data = bx24.get_data(post['data[FIELDS][ID]'], data_type, URL)
+    data_types = {}
     transaction = {}
     if f'{data_type}_fields' in config.keys():
+        for field in columns_dump[data_type]:
+            data_types[field['name']] = {'nullable': field['nullable'], 'type': field['type']}
         for field in config[f'{data_type}_fields']:
             if field in data.keys():
                 transaction[field] = data[field]
-                nullable = columns_dump[data_type][field]['nullable']  
-                target_data_type = columns_dump[data_type][field]['type']
+                nullable = data_types[config[f'{data_type}_fields'][field]]['nullable']
+                target_data_type = data_types[config[f'{data_type}_fields'][field]]['type']
                 current_preproc = []
                 if nullable:
                     current_preproc.append(lambda x: pf.void_to_null(x))
@@ -72,7 +78,7 @@ def handler(event, context):
                 for func in current_preproc:
                     transaction[field] = func(transaction[field])
     
-    db.load_data_to_sql(transaction, data_type, config[f'{table_type}_fields'], **config['db'])
+    db.load_data_to_sql([transaction], config['table_names'][data_type], config[f'{data_type}_fields'], **config['db'])
 
     return {
         'statusCode': 200,

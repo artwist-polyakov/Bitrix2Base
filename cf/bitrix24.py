@@ -1,3 +1,6 @@
+import requests
+import json
+
 def get_data(id, type, url):
     method = f'crm.{type}.get'
     params = {'id': id}

@@ -41,7 +41,7 @@ def get_columns_and_types(table, host, port, user, password, db_name):
     # columns = [line.split('\t') for line in response.split('\n') if line]
     return result
 
-def load_data_to_sql(data, table, fields_matching, host, port, user, password, db_name, batch_size=100):
+def load_data_to_sql(data, table, fields_matching, host, port, user, password, db_name, batch_size=100, relaxing = False):
     client = get_client(host, port, user, password, db_name)
     total = len(data)
     progress_bar = tqdm(total=total, position=0, leave=True)
@@ -115,10 +115,11 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
         progress_bar.update(len(negative_rows) + len(positive_rows))
 
     progress_bar.close()
-    print("Prepearing to relax tree...")
-    time.sleep(20)
-    print("Relaxing tree...")
-    relax_versionned_merge_tree(table, host, port, user, password, db_name)
+    if relaxing:
+        print("Prepearing to relax tree...")
+        time.sleep(20)
+        print("Relaxing tree...")
+        relax_versionned_merge_tree(table, host, port, user, password, db_name)
 
 
 def terrible_list_to_dict(data):

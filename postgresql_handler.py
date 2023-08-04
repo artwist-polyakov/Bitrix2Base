@@ -24,7 +24,7 @@ def test_connection(host, port, user, password, db_name):
         print("Failed to connect to the database.")
         print(str(e))
 
-def load_data_to_sql(data, table, fields_matching, host, port, user, password, db_name):
+def load_data_to_sql(data, table, fields_matching, host, port, user, password, db_name, relaxing = False):
     # Создаем движок SQLAlchemy
     engine = create_engine(f"postgresql+psycopg2://{user}:{password}@{host}:{port}/{db_name}") 
     total = len(data)

@@ -1,5 +1,4 @@
 tqdm==4.63.0
 requests
-json
 pyyaml
 clickhouse_connect==0.6.8
