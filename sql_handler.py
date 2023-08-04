@@ -44,7 +44,7 @@ def test_connection(host, port, user, password, db_name):
         # Если при выполнении запроса возникла ошибка, выводим сообщение об ошибке
         print("Failed to connect to the database.")
         print(str(e))
-        
+
 def load_data_to_sql(data, table, fields_matching, host, port, user, password, db_name):
     # Создаем движок SQLAlchemy
     engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}") 
@@ -67,4 +67,12 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
             if k % 100 == 0:
                 progress_bar.update(100)
 
-
+def delete_by_id(id, table, host, port, user, password, db_name):
+    # Создаем движок SQLAlchemy
+    engine = create_engine(f"mysql+pymysql://{user}:{password}@{host}:{port}/{db_name}")
+    # Начинаем транзакцию
+    with engine.begin() as connection:
+        # Форматируем SQL запрос
+        sql = text(f"DELETE FROM {table} WHERE ID = :id")
+        # Выполняем SQL запрос
+        connection.execute(sql, id=id)

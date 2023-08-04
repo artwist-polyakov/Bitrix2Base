@@ -1,0 +1,22 @@
+deal:
+- name: ID
+  nullable: false
+  type: UInt64
+- name: TITLE
+  nullable: false
+  type: String
+- name: DATE_CREATE
+  nullable: false
+  type: DateTime(\'Europe/Moscow\')
+- name: OPPORTUNITY
+  nullable: false
+  type: Decimal(9, 2)
+- name: YMClientId
+  nullable: true
+  type: Nullable(UInt64)
+- name: sign
+  nullable: false
+  type: Int8
+- name: version
+  nullable: false
+  type: UInt32

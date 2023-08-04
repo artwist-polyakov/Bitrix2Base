@@ -1,0 +1,5 @@
+tqdm==4.63.0
+requests
+json
+pyyaml
+SQLAlchemy==1.4.32
