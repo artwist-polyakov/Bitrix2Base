@@ -40,7 +40,7 @@ This README provides instructions for setting up and running the project.
 
 All files for Yandex Cloud Functions are automatically generated in the cf/ directory of the project.
 
-**When deploying the function and connecting the outgoing webhook from Bitrix24, be sure to write the application id to the environment variable `app_token`.**
+**When deploying the function and connecting the outgoing webhook from Bitrix24, be sure to write the `application id` value to the environment variable `app_token`.**
 
 ## Additional Notes
 
