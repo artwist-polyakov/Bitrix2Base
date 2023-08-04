@@ -2,27 +2,30 @@ deal:
 - autoincrement: false
   comment: null
   default: null
-  name: ID
+  name: id
   nullable: false
   type: BIGINT
-- comment: null
-  default: null
-  name: TITLE
-  nullable: false
-  type: VARCHAR(255)
-- comment: null
-  default: null
-  name: DATE_CREATE
-  nullable: false
-  type: DATETIME
-- comment: null
-  default: null
-  name: OPPORTUNITY
-  nullable: false
-  type: DECIMAL(9, 2)
 - autoincrement: false
   comment: null
   default: null
-  name: YMClientId
+  name: title
+  nullable: false
+  type: VARCHAR(255)
+- autoincrement: false
+  comment: null
+  default: null
+  name: date_create
+  nullable: false
+  type: TIMESTAMP
+- autoincrement: false
+  comment: null
+  default: null
+  name: opportunity
+  nullable: false
+  type: NUMERIC(9, 2)
+- autoincrement: false
+  comment: null
+  default: null
+  name: ymclientid
   nullable: true
-  type: BIGINT
+  type: NUMERIC
