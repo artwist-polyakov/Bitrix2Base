@@ -9,7 +9,7 @@ This README provides instructions for setting up and running the project.
    git clone https://github.com/your-username/your-repository.git
    ```
 
-2. Copy the config.example.yaml file and rename it to config.yaml. Open the config.yaml file and fill it with your own data.
+2. Copy the `config.example.yaml` file and rename it to `config.yaml`. Open the config.yaml file and fill it with your own data.
 
 3. Download Docker from the official website: [https://www.docker.com/get-started](https://www.docker.com/get-started)
 
