@@ -57,7 +57,7 @@ def load_data_to_sql(data, table, fields_matching, host, port, user, password, d
         ID = row.get('ID')  # assuming 'ID' is the key for the unique identifier
 
         # Check if there's a record with this id in the table and the sum of 'sign' for each 'version' equals 1
-        with client.query_row_block_stream(f"SELECT {columns_str}, SUM(sign) as sum_sign FROM {table} WHERE ID = {ID} GROUP BY {columns_str} HAVING sum_sign >= 1") as stream:
+        with client.query_row_block_stream(f"SELECT {columns_str}, SUM(sign) as sum_sign FROM {table} WHERE ID = {ID} GROUP BY {columns_str} HAVING sum_sign != 0") as stream:
             for block in stream:
                 for db_row in block:
                     db_row_dict = dict(zip(stream.source.column_names, db_row))
@@ -143,7 +143,7 @@ def relax_versionned_merge_tree(table, host, port, user, password, db_name):
     columns_str = ', '.join(columns)
     negative_rows = []  
     # Find all records that have a sum of 'sign' less than 0 when grouped by version
-    with client.query_row_block_stream(f"SELECT {columns_str}, SUM(sign) as sum_sign FROM {table} GROUP BY  {columns_str} HAVING sum_sign < 0") as stream:
+    with client.query_row_block_stream(f"SELECT {columns_str}, SUM(sign) as sum_sign FROM {table} GROUP BY  {columns_str} HAVING sum_sign != 1") as stream:
         for block in stream:
             for db_row in block:
                 db_row_dict = dict(zip(stream.source.column_names, db_row))
