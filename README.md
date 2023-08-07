@@ -1,6 +1,8 @@
-# README
+# b24_loader — easy way to save data from Bitrix24 to database.
 
+This product provides work with MySQL, PostgreSQL and Clickhouse databases.
 This README provides instructions for setting up and running the project.
+
 
 ## Instructions
 
