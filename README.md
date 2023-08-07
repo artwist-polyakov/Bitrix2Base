@@ -8,7 +8,7 @@ This README provides instructions for setting up and running the project.
 
 1. Clone the repository to your local machine:
    ```
-   git clone https://github.com/your-username/your-repository.git
+   git clone https://github.com/artwist-polyakov/b24_loader.git
    ```
 
 2. Copy the `config.example.yaml` file and rename it to `config.yaml`. Open the config.yaml file and fill it with your own data.
