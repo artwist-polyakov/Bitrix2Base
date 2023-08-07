@@ -2,10 +2,7 @@ import json
 import time
 import requests
 import yaml
-import sql_handler
-import postgresql_handler
-import clickhouse_handler
-import docker_service
+from handlers import sql_handler, postgresql_handler, clickhouse_handler
 import shutil
 import preprocessing_functions as pf
 import warnings
@@ -48,10 +45,10 @@ if database_type in database_import_mapper:
 
     # MARK: COPY FILES
     destination_file = 'cf/db_handler.py'
-    source_file = handler.__name__+'.py'
+    source_file = f'handlers/{handler.__name__.split(".")[-1]}.py'
     shutil.copyfile(source_file, destination_file)
     destination_file = 'cf/requirements.txt'
-    source_file = handler.__name__+'_requirements.txt'
+    source_file = f'requirements/{handler.__name__.split(".")[-1]}_requirements.txt'
     shutil.copyfile(source_file, destination_file)
     destination_file = 'cf/preprocessing_functions.py'
     source_file = 'preprocessing_functions.py'
@@ -132,7 +129,6 @@ with open('cf/columns_and_types.yaml', 'w') as file:
 if has_errors:
     print(*list_of_errors, sep='\n')
     print('Please, check your config.yaml file and database. After that, restart the container.')
-    docker_service.close()
 
 # print(preprocessing_config)
 
