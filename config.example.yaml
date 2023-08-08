@@ -14,7 +14,7 @@ table_names: # If value = null, export will be skipped
  company: null
  contact: null
 
-deal_fields: # Key in bitrix24: Value in DB. If key or value = null, export will be skipped too
+deal_fields: # Key in bitrix24: Value in DB. If you write `null` instead of `key: value`, export of this data type will be skipped.
  ID: ID
  FEATURE_2: DB_FEATURE_2_COLUMN_NAME
  FEATURE_3: DB_FEATURE_3_COLUMN_NAME
