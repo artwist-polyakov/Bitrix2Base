@@ -36,10 +36,8 @@ filter_date: # filter for all of exports.
 
 # BETA FEATURES
 # custom preprocessing functions
-deal_functions: # Key in bitrix24: function name in preprocessing_functions.py.
+deal_functions: null # Key in bitrix24: function name in preprocessing_functions.py.
 # If you write `null` instead of `key: value`, export of this data type will be skipped.
- ID: add_million_to_id
- UF_CRM_CUSTOMFIELD2: function_name2
 
 lead_functions: null # Use example from deals. If value = null, export will be skipped too.
 
