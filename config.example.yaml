@@ -33,3 +33,16 @@ company_fields: null # Use example from deals. If value = null, export will be s
 filter_date: # filter for all of exports.
  lower: 2021-01-01 # If value = null, there are no limitations
  upper: null
+
+# BETA FEATURES
+# custom preprocessing functions
+deal_functions: # Key in bitrix24: function name in preprocessing_functions.py.
+# If you write `null` instead of `key: value`, export of this data type will be skipped.
+ ID: add_million_to_id
+ UF_CRM_CUSTOMFIELD2: function_name2
+
+lead_functions: null # Use example from deals. If value = null, export will be skipped too.
+
+contact_functions: null # Use example from deals. If value = null, export will be skipped too.
+
+company_functions: null # Use example from deals. If value = null, export will be skipped too.

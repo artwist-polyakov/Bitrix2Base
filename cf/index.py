@@ -62,18 +62,21 @@ def handler(event, context):
                 nullable = data_types[config[f'{data_type}_fields'][field]]['nullable']
                 target_data_type = data_types[config[f'{data_type}_fields'][field]]['type']
                 current_preproc = []
-                if nullable:
-                    current_preproc.append(lambda x: pf.void_to_null(x))
+                if field in config[f'{data_type}_functions'].keys():
+                    current_preproc = [config[f'{data_type}_functions'][field]]
                 else:
-                    current_preproc.append(lambda x: pf.safe_from_null(x)) 
-                if ("String" in target_data_type) or ('VARCHAR' in target_data_type) or ('TEXT' in target_data_type) or ('CHAR' in target_data_type) or ('TINYTEXT' in target_data_type) or ('MEDIUMTEXT' in target_data_type) or ('LONGTEXT' in target_data_type):
-                    current_preproc.append(lambda x: pf.smth_to_string(x))
-                elif ("Int" in target_data_type) or ("INTEGER" in target_data_type) or ("BIGINT" in target_data_type) or ("TINYINT" in target_data_type) or ("SMALLINT" in target_data_type) or ("MEDIUMINT" in target_data_type) :
-                    current_preproc.append(lambda x: pf.smth_to_int(x))
-                elif ("Float" in target_data_type) or ("Decimal" in target_data_type) or ("DECIMAL" in target_data_type):
-                    current_preproc.append(lambda x: pf.smth_to_float(x))
-                elif ("DateTime" in target_data_type) or ("TIMESTAMP" in target_data_type) or ("DATE" in target_data_type) or ("TIME" in target_data_type) or ("YEAR" in target_data_type):
-                    current_preproc.append(lambda x: pf.string_to_datetime(x, database_type))
+                    if nullable:
+                        current_preproc.append(lambda x: pf.void_to_null(x))
+                    else:
+                        current_preproc.append(lambda x: pf.safe_from_null(x)) 
+                    if ("String" in target_data_type) or ('VARCHAR' in target_data_type) or ('TEXT' in target_data_type) or ('CHAR' in target_data_type) or ('TINYTEXT' in target_data_type) or ('MEDIUMTEXT' in target_data_type) or ('LONGTEXT' in target_data_type):
+                        current_preproc.append(lambda x: pf.smth_to_string(x))
+                    elif ("Int" in target_data_type) or ("INTEGER" in target_data_type) or ("BIGINT" in target_data_type) or ("TINYINT" in target_data_type) or ("SMALLINT" in target_data_type) or ("MEDIUMINT" in target_data_type) :
+                        current_preproc.append(lambda x: pf.smth_to_int(x))
+                    elif ("Float" in target_data_type) or ("Decimal" in target_data_type) or ("DECIMAL" in target_data_type):
+                        current_preproc.append(lambda x: pf.smth_to_float(x))
+                    elif ("DateTime" in target_data_type) or ("TIMESTAMP" in target_data_type) or ("DATE" in target_data_type) or ("TIME" in target_data_type) or ("YEAR" in target_data_type):
+                        current_preproc.append(lambda x: pf.string_to_datetime(x, database_type))
 
                 for func in current_preproc:
                     transaction[field] = func(transaction[field])

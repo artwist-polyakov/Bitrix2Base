@@ -106,20 +106,22 @@ It is obligatory field.")
                 current_preproc = preprocessing_config[table_type].get(
                     column, [])
 
-                # TODO Подумать о других кейсах препроцессинга.
-                if nullable:
-                    current_preproc.append(lambda x: pf.void_to_null(x))
+                if column in config[f'{table_type}_functions'].keys():
+                    function_name = config[f'{table_type}_functions'][column]
+                    current_preproc = [getattr(pf, function_name)]
                 else:
-                    current_preproc.append(lambda x: pf.safe_from_null(x)) 
-                if ("String" in target_data_type) or ('VARCHAR' in target_data_type) or ('TEXT' in target_data_type) or ('CHAR' in target_data_type) or ('TINYTEXT' in target_data_type) or ('MEDIUMTEXT' in target_data_type) or ('LONGTEXT' in target_data_type):
-                    current_preproc.append(lambda x: pf.smth_to_string(x))
-                elif ("Float" in target_data_type) or ("Decimal" in target_data_type) or ("DECIMAL" in target_data_type) or ((',' in target_data_type ) and ("NUMERIC" in target_data_type)):
-                    current_preproc.append(lambda x: pf.smth_to_float(x))
-                elif ("Int" in target_data_type) or ("INTEGER" in target_data_type) or ("BIGINT" in target_data_type) or ("TINYINT" in target_data_type) or ("SMALLINT" in target_data_type) or ("MEDIUMINT" in target_data_type) or ("NUMERIC" in target_data_type) :
-                    current_preproc.append(lambda x: pf.smth_to_int(x))
-                elif ("DateTime" in target_data_type) or ("TIMESTAMP" in target_data_type) or ("DATE" in target_data_type) or ("TIME" in target_data_type) or ("YEAR" in target_data_type):
-                    current_preproc.append(lambda x: pf.string_to_datetime(x, database_type))
-
+                    if nullable:
+                        current_preproc.append(lambda x: pf.void_to_null(x))
+                    else:
+                        current_preproc.append(lambda x: pf.safe_from_null(x)) 
+                    if ("String" in target_data_type) or ('VARCHAR' in target_data_type) or ('TEXT' in target_data_type) or ('CHAR' in target_data_type) or ('TINYTEXT' in target_data_type) or ('MEDIUMTEXT' in target_data_type) or ('LONGTEXT' in target_data_type):
+                        current_preproc.append(lambda x: pf.smth_to_string(x))
+                    elif ("Float" in target_data_type) or ("Decimal" in target_data_type) or ("DECIMAL" in target_data_type) or ((',' in target_data_type ) and ("NUMERIC" in target_data_type)):
+                        current_preproc.append(lambda x: pf.smth_to_float(x))
+                    elif ("Int" in target_data_type) or ("INTEGER" in target_data_type) or ("BIGINT" in target_data_type) or ("TINYINT" in target_data_type) or ("SMALLINT" in target_data_type) or ("MEDIUMINT" in target_data_type) or ("NUMERIC" in target_data_type) :
+                        current_preproc.append(lambda x: pf.smth_to_int(x))
+                    elif ("DateTime" in target_data_type) or ("TIMESTAMP" in target_data_type) or ("DATE" in target_data_type) or ("TIME" in target_data_type) or ("YEAR" in target_data_type):
+                        current_preproc.append(lambda x: pf.string_to_datetime(x, database_type))
                 if current_preproc:
                     preprocessing_config[table_type][column] = current_preproc
 
