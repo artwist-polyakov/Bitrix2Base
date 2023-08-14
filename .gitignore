@@ -1,2 +1,5 @@
 config.yaml
 *pycache*
+cf/*handler*
+cf/*requirements*
+cf/*.yaml

@@ -71,3 +71,7 @@ def safe_from_null(value):
         return "$$NULL$$"
     else:
         return value
+
+# MARK: CUSTOM FUNCTIONS EXAMPLE
+def add_million_to_id(value: int) -> int:
+    return int(value) + 1000000
