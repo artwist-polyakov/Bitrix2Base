@@ -1,0 +1,46 @@
+b24_key: yours_b24_webhook
+database_type: MySQL # available values: 'MySQL', 'PostgreSQL', 'ClickHouse'
+
+db:
+ host: 'yours database ip'
+ port: 123 #example
+ user: username
+ password: password
+ db_name: db_name
+
+table_names: # If value = null, export will be skipped
+ deal: deals_table
+ lead: null
+ company: null
+ contact: null
+
+deal_fields: # Key in bitrix24: Value in DB. If you write `null` instead of `key: value`, export of this data type will be skipped.
+ ID: ID
+ FEATURE_2: DB_FEATURE_2_COLUMN_NAME
+ FEATURE_3: DB_FEATURE_3_COLUMN_NAME
+ FEATURE_4: DB_FEATURE_4_COLUMN_NAME
+ FEATURE_5: DB_FEATURE_5_COLUMN_NAME
+ FEATURE_6: DB_FEATURE_6_COLUMN_NAME
+ FEATURE_7: DB_FEATURE_7_COLUMN_NAME
+ FEATURE_8: DB_FEATURE_8_COLUMN_NAME
+
+lead_fields: null # Use example from deals. If value = null, export will be skipped too.
+
+contact_fields: null # Use example from deals. If value = null, export will be skipped too.
+
+company_fields: null # Use example from deals. If value = null, export will be skipped too.
+
+filter_date: # filter for all of exports.
+ lower: 2021-01-01 # If value = null, there are no limitations
+ upper: null
+
+# BETA FEATURES
+# custom preprocessing functions
+deal_functions: null # Key in bitrix24: function name in preprocessing_functions.py.
+# If you write `null` instead of `key: value`, export of this data type will be skipped.
+
+lead_functions: null # Use example from deals. If value = null, export will be skipped too.
+
+contact_functions: null # Use example from deals. If value = null, export will be skipped too.
+
+company_functions: null # Use example from deals. If value = null, export will be skipped too.
