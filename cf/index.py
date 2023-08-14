@@ -63,7 +63,8 @@ def handler(event, context):
                 target_data_type = data_types[config[f'{data_type}_fields'][field]]['type']
                 current_preproc = []
                 if field in config[f'{data_type}_functions'].keys():
-                    current_preproc = [config[f'{data_type}_functions'][field]]
+                    function_name = config[f'{data_type}_functions'][field]
+                    current_preproc = [getattr(pf, function_name)]
                 else:
                     if nullable:
                         current_preproc.append(lambda x: pf.void_to_null(x))
