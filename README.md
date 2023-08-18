@@ -1,4 +1,4 @@
-# Easy way to save data from Bitrix24 to database.
+# Bitrix2Base — Easy way to save data from Bitrix24 to database.
 
 This product provides work with MySQL, PostgreSQL and Clickhouse databases.
 This README provides instructions for setting up and running the project.
@@ -8,7 +8,7 @@ This README provides instructions for setting up and running the project.
 
 1. Clone the repository to your local machine:
    ```
-   git clone https://github.com/artwist-polyakov/b24_loader.git
+   git clone https://github.com/artwist-polyakov/Bitrix2Base.git
    ```
 
 2. Copy the `config.example.yaml` file and rename it to `config.yaml`. Open the config.yaml file and fill it with your own data.
@@ -54,4 +54,4 @@ All files for Yandex Cloud Functions are automatically generated in the `/cf` di
 
 ## License
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />This work "<span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Loader for Bitrix24</span>" created by <a xmlns:cc="http://creativecommons.org/ns#" href="https://polyakov.marketing/" property="cc:attributionName" rel="cc:attributionURL">Aleksandr Poliakov</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/artwist-polyakov/b24_loader" rel="dct:source">https://github.com/artwist-polyakov/b24_loader</a>.<br />Permissions beyond the scope of this license may be available at <a xmlns:cc="http://creativecommons.org/ns#" href="https://polyakov.marketing/" rel="cc:morePermissions">https://polyakov.marketing/</a>.
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />This work "<span xmlns:dct="http://purl.org/dc/terms/" href="http://purl.org/dc/dcmitype/InteractiveResource" property="dct:title" rel="dct:type">Bitrix2Base</span>" created by <a xmlns:cc="http://creativecommons.org/ns#" href="https://polyakov.marketing/" property="cc:attributionName" rel="cc:attributionURL">Aleksandr Poliakov</a> is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.<br />Based on a work at <a xmlns:dct="http://purl.org/dc/terms/" href="https://github.com/artwist-polyakov/Bitrix2Base" rel="dct:source">https://github.com/artwist-polyakov/Bitrix2Base</a>.<br />Permissions beyond the scope of this license may be available at <a xmlns:cc="http://creativecommons.org/ns#" href="https://polyakov.marketing/" rel="cc:morePermissions">https://polyakov.marketing/</a>.
