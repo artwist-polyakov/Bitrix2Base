@@ -11,11 +11,14 @@ def show_fields():
         print(table_type.capitalize() + " fields:")
         print("=========================")
         result = r.json()['result']
+        # userfields = {element['FIELD_NAME']: for element in requests.get(URL+f'crm.{table_type}.userfield.list').json()['result']}
         for field_name in result.keys():
-            title = result[field_name]['title']
+            if 'UF_' in field_name:
+                title = result[field_name]['formLabel']
+            else:
+                title = result[field_name]['title']
             print(f'Field name:{field_name}, field title: {title}')
         print("=========================")
-show_fields()
 
 if __name__ == "__main__":
-    show_values()
+    show_fields()
